@@ -35,42 +35,56 @@ def content_generator(input):
             writer.writerow(content)
 
 def gui():
-    # TO-DO: implement tkinter GUI for application
+    # Main Window
     root = Tk()
     root.title("Kramaral Corporation Content Generator")
     frame = ttk.Frame(root, padding = "3 3 12 12")
+
+    # Grid layout
     frame.grid(column=0, row=0, sticky=(N, W, E, S))
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
+    # Introduction
     ttk.Label(frame, text='Welcome to the Kramaral Content Generator Service! Please use the options below to specify the type of content you require, and type the keywords for your request into the fields below.', wraplength=700).grid(column=1, row =1, columnspan=10, rowspan=3)
 
+    # Main Topic Keyword Entry
     keyword1 = StringVar()
     kw1_entry = ttk.Entry(frame, width=7, textvariable=keyword1)
-    kw1_entry.grid(column=5, row=7, sticky=(W, E))
-    ttk.Label(frame,text='Main Topic').grid(column=6, row=7)
+    kw1_entry.grid(column=2, row=7, sticky=(W, E))
+    ttk.Label(frame,text='Main Topic').grid(column=3, row=7, sticky=W)
 
+    # Sub-topic Keyword Entry
     keyword2 = StringVar()
     kw2_entry = ttk.Entry(frame, width=7, textvariable=keyword2)
-    kw2_entry.grid(column=5, row=8, sticky=(W, E))
-    ttk.Label(frame,text='Sub-Topic').grid(column=6, row=8)
+    kw2_entry.grid(column=2, row=8, sticky=(W, E))
+    ttk.Label(frame,text='Sub-Topic').grid(column=3, row=8, sticky=W)
 
-    output = ttk.Label(frame,text='Output: ').grid(column=4, row=9, columnspan=10, sticky=W)
-    ttk.Button(frame, text="Submit Request--->", command = lambda : gui_wiki(keyword1, keyword2, frame)).grid(column=10, row=15, sticky=W)
+    # Output Field 
+    outputlabel = ttk.Label(frame,text='Output: ').grid(column=2, row=9, columnspan=10, sticky=W)
+    output = Text(frame, height=18, wrap=WORD)
+    output.grid(column=2, row=10, columnspan=8, rowspan=5, sticky=W)
+    scrollbar = Scrollbar(frame)
+    output.config(yscrollcommand = scrollbar.set)
+    scrollbar.config(command = output.yview)
+    scrollbar.grid(column = 10, row = 10, rowspan = 5, sticky=N+S+W)
+
+    # Submit Button
+    ttk.Button(frame, text="Submit Request--->", command = lambda : gui_wiki(keyword1, keyword2, output)).grid(column=10, row=15, sticky=W)
     
     for child in frame.winfo_children():
         child.grid_configure(padx=5, pady=5)
 
-
     kw1_entry.focus()
     root.mainloop()
 
-def gui_wiki(keyword1, keyword2, parent):
+def gui_wiki(keyword1, keyword2, output):
     try:
+        output.delete(1.0, END)
         kw1=keyword1.get()
         kw2=keyword2.get()
         result=wikipedia_search(kw1, kw2)
-        ttk.Label(parent,text=result, wraplength=700).grid(column=4, row=10, columnspan=10,rowspan=5,sticky=W)
+        output.insert(1.0, result)
         with open('output.csv', 'w', newline='') as outputFile:
             writer = csv.writer(outputFile, delimiter='\t', quoting = csv.QUOTE_NONE, escapechar='\t')
             writer.writerow(['input_keywords, output_content'])
