@@ -19,20 +19,19 @@ def interface_select():
 def content_generator(input):
     # When provided with an input file, this function Creates an Output file and write results
     with open('output.csv', 'w', newline='') as outputFile:
-        writer = csv.writer(outputFile, delimiter='\t', quoting = csv.QUOTE_NONE, escapechar='\t')
+        writer = csv.writer(outputFile, quoting = csv.QUOTE_MINIMAL, escapechar = '\t')
 
         # Read input keywords from passed CSV file, call search function and write results
         with open(input, newline='') as csvfile:
             keywordReader = csv.reader(csvfile)
             row=next(keywordReader)
-            row[0]=row[0]+', output_content'
-            writer.writerow(row)
+            writer.writerow([row[0]]+['output_content'])
             row=next(keywordReader)
             keywords = row[0].split(';')
             keyword1 = keywords[0]
             keyword2 = keywords[1]
-            content = [row[0] + ', ' + wikipedia_search(keyword1, keyword2)]
-            writer.writerow(content)
+            content = wikipedia_search(keyword1, keyword2)
+            writer.writerow([row[0]]+[content])
 
 def gui():
     # Main Window
@@ -86,10 +85,10 @@ def gui_wiki(keyword1, keyword2, output):
         result=wikipedia_search(kw1, kw2)
         output.insert(1.0, result)
         with open('output.csv', 'w', newline='') as outputFile:
-            writer = csv.writer(outputFile, delimiter='\t', quoting = csv.QUOTE_NONE, escapechar='\t')
-            writer.writerow(['input_keywords, output_content'])
-            content = [str(kw1) + ';' + str(kw2) + ', ' + str(result)]
-            writer.writerow(content)
+            writer = csv.writer(outputFile, quoting = csv.QUOTE_MINIMAL, escapechar='\t')
+            writer.writerow(['input_keywords']+['output_content'])
+            content = str(kw1) + ';' + str(kw2)
+            writer.writerow([content] + [str(result)])
     except ValueError:
         pass
 
