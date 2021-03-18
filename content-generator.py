@@ -43,11 +43,13 @@ def gui():
     ttk.Label(frame, text= introParagraph, wraplength=700).grid(column=1, row =1, columnspan=10, rowspan=3)
     keywords = keywordInputs(root, frame)
     contentCheck = tkinter.IntVar()
-    contentCheckButton = ttk.Checkbutton(frame, text="Content Paragraph", variable=contentCheck, onvalue=1, offvalue=0)
+    contentCheckButton = ttk.Checkbutton(frame, text="Wiki Paragraph", variable=contentCheck, onvalue=1, offvalue=0)
     contentCheckButton.grid(column=2, row=4, columnspan = 3, sticky=W)
+    ttk.Button(frame,text='(?)', command = lambda: openToolTip(contentOptionToolTip), width=3).grid(column=4, row=4)
     shoppingCheck = tkinter.IntVar()
-    shoppingCheckButton = ttk.Checkbutton(frame, text="Shopping Results", variable=shoppingCheck, onvalue=1, offvalue=0)
+    shoppingCheckButton = ttk.Checkbutton(frame, text="Top 10 Shopping", variable=shoppingCheck, onvalue=1, offvalue=0)
     shoppingCheckButton.grid(column=2, row=5, columnspan = 3, sticky=W)
+    ttk.Button(frame,text='(?)', command = lambda: openToolTip(shoppingOptionToolTip), width=3).grid(column=4, row=5)
 
     output = None
     lifeGenOutput = None    
